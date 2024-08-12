@@ -22,6 +22,16 @@ module OmniAuth
         super
       end
 
+      def token_params
+        params = options.token_params.merge(options_for("token")).merge(pkce_token_params)
+        headers = {
+            'WM_PARTNER.ID' => request.params['sellerId'],
+            'WM_QOS.CORRELATION_ID' => SecureRandom.uuid,
+            'WM_SVC.NAME' =>  'Walmart Marketplace'
+        }
+        params.merge!('headers' => headers)
+      end
+
       protected
       
       def callback_url
