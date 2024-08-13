@@ -3,6 +3,8 @@ require 'omniauth/strategies/oauth2'
 module OmniAuth
   module Strategies
     class Walmart < OmniAuth::Strategies::OAuth2
+      attr_reader :seller_id
+
       option :name, "walmart_marketplace"
 
       option :client_options, {
@@ -14,6 +16,12 @@ module OmniAuth
       option :token_params, { grant_type: 'authorization_code' }
       option :provider_ignores_state, true
       
+      extra do
+        {
+          'seller_id' => seller_id
+        }
+      end
+
       def request_phase
         redirect client.auth_code.authorize_url({:redirect_uri => callback_url}.merge(authorize_params))
       end
@@ -23,6 +31,7 @@ module OmniAuth
       end
 
       def token_params
+        @seller_id = request.params['sellerId']
         params = options.token_params.merge(options_for("token")).merge(pkce_token_params)
         headers = {
             'WM_PARTNER.ID' => request.params['sellerId'],
