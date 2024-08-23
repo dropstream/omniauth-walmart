@@ -34,5 +34,18 @@ describe OmniAuth::Strategies::Walmart do
       eq('/auth/walmart_marketplace/callback')
     end
   end
+
+  describe '#token_params' do
+    before do
+      allow(subject).to receive(:request) do
+        double("Request", :params => {'sellerId' => '12313213'})
+      end
+    end
+
+    it 'has the correct token_params' do
+      expect(subject.token_params['grant_type']).to eq('authorization_code')
+      expect(subject.token_params['headers'].keys).to contain_exactly('WM_PARTNER.ID', 'WM_QOS.CORRELATION_ID', 'WM_SVC.NAME')
+    end
+  end
   
 end
