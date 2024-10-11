@@ -18,7 +18,9 @@ module OmniAuth
       
       extra do
         {
-          'seller_id' => seller_id
+          'seller_id' => seller_id,
+          'client_id' => options.dig('client_id'),
+          'client_secret' => options.dig('client_secret') 
         }
       end
 
